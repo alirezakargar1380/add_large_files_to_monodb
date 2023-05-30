@@ -28,6 +28,8 @@ export interface IUser {
     emails?: IUserEmail[]
     current_job_title?: string
     connection_link?: string | null
+    twitter_url?: string | null
+    github_url?: string | null
     isFromMyConnection: boolean
     exportedConnectionData: boolean
     exportedSectionsData: boolean
@@ -60,6 +62,8 @@ const usersSchema = new Schema<IUser>({
         }
     ],
     current_job_title: { type: String, required: false },
+    twitter_url: { type: String, required: false },
+    github_url: { type: String, required: false },
     connection_link: { type: String, required: false, default: null },
     isFromMyConnection: { type: Boolean, required: true },
     exportedConnectionData: { type: Boolean, required: true, default: false },

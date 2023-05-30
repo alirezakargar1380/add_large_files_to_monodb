@@ -1,14 +1,19 @@
+import { ObjectId } from "mongodb";
 import { connectToMongo } from "./app/loaders/loaders";
 import skillsModel from "./app/models/skills.model";
 import usersModel, { IUser } from "./app/models/users.model";
-import { addCountries } from "./app/services/addCountries.service";
-import { addExperience } from "./app/services/addExperience.service";
-import { addInterests } from "./app/services/addInterests.service";
-import { addLanguages } from "./app/services/addLanguage.service";
-import { addRegions } from "./app/services/addRegions.service";
-import { addSkills } from "./app/services/addSkills.service";
-import { addUser } from "./app/services/addUser.service";
-import { addCertifications } from "./app/services/addcertifications.service";
+import { addCountries, addMultiCountries, bulkCountries } from "./app/services/addCountries.service";
+import { addEducation, bulkEdu } from "./app/services/addEducation.service";
+import { addExperience, addMultiExperience, bulkEx } from "./app/services/addExperience.service";
+import { addInterests, addMultiInterests, bulkIntrest } from "./app/services/addInterests.service";
+import { addLanguages, addMultiLanguages, bulkLanguages } from "./app/services/addLanguage.service";
+import { addMultiRegions, addRegions, bulkRegions } from "./app/services/addRegions.service";
+import { addMultiSkills, addSkills, bulkSkills } from "./app/services/addSkills.service";
+import { addMultiUser, addUser, bulkUsers } from "./app/services/addUser.service";
+import { addCertifications, addMultiCertifications, bulkCertifications } from "./app/services/addcertifications.service";
+import { bulkCompany } from "./app/services/addCompany.service";
+import { bulkLocation } from "./app/services/addLocation.service";
+import { bulkSchool } from "./app/services/addSchool.service";
 
 var fs = require('fs'), es = require('event-stream');
 const fileNames: any = []
@@ -73,9 +78,17 @@ const sendFileNamesToFileReader = async () => {
     // )
     // return
     await readFileNames()
-    for (let i = 0; i < fileNames.length; i++) {
-        let fileName = fileNames[i]
-        await fileReader(folderAddress + "/" + fileName)
+    // let i = 0
+    // fileReader(folderAddress + "/" + fileNames[i])
+    // fileReader(folderAddress + "/" + fileNames[i + 1])
+    // fileReader(folderAddress + "/" + fileNames[i + 2])
+    // fileReader(folderAddress + "/" + fileNames[i + 3])
+    // fileReader(folderAddress + "/" + fileNames[i + 4])
+    // fileReader(folderAddress + "/" + fileNames[i + 5])
+    // fileReader(folderAddress + "/" + fileNames[i + 6])
+    // return
+    for (let i = 0; i < (fileNames.length / 4); i++) {
+        await fileReader(folderAddress + "/" + fileNames[i])
     }
 }
 
@@ -91,10 +104,10 @@ function isJson(str: string) {
 }
 
 const fileReader = (fileAddress: string) => {
-    console.log(fileAddress)
     return new Promise(async (resolve, reject) => {
         var lineNr = 0;
         console.log("start:", new Date())
+        console.log(fileAddress)
         var s = fs.createReadStream(fileAddress)
             .pipe(es.split())
             .pipe(es.mapSync(async (line: any) => {
@@ -106,18 +119,33 @@ const fileReader = (fileAddress: string) => {
                 lineNr++;
 
                 const json = JSON.parse(line)
-                if (lineNr % 1000 === 0) console.log("im in line:", lineNr)
+                if (lineNr % 20000 === 0) {
+                    console.log("im in line:", lineNr, new Date(), fileAddress)
+                }
 
+                const userId: ObjectId = await addMultiUser(json)
+
+                if (json.languages.length) await addMultiLanguages(json.languages, userId)
+                if (json.skills.length) await addMultiSkills(json.skills, userId)
+                if (json.countries.length) await addMultiCountries(json.countries, userId)
+                if (json.regions.length) await addMultiRegions(json.regions, userId)
+                if (json.certifications.length) await addMultiCertifications(json.certifications, userId)
+                if (json.interests.length) await addMultiInterests(json.interests, userId)
+                if (json.experience.length) await addMultiExperience(json.experience, userId)
+
+                return s.resume();
+                // ------------------------------------ old sulution
                 const user: IUser | any = await addUser(json)
                 if (!user) return s.resume();
 
-                // if (json.experience.length) await addExperience(json.experience, user._id)
-                // if (json.languages.length) await addLanguages(json.languages, user._id)
-                // if (json.skills.length) await addSkills(json.skills, user._id)
-                // if (json.countries.length) await addCountries(json.countries, user._id)
+                if (json.experience.length) await addExperience(json.experience, user._id)
+                if (json.education.length) await addEducation(json.education, user._id)
+                if (json.languages.length) await addLanguages(json.languages, user._id)
+                if (json.skills.length) await addSkills(json.skills, user._id)
+                if (json.countries.length) await addCountries(json.countries, user._id)
                 if (json.regions.length) await addRegions(json.regions, user._id)
-                // if (json.certifications.length) await addCertifications(json.certifications, user._id)
-                // if (json.interests.length) await addInterests(json.interests, user._id)
+                if (json.certifications.length) await addCertifications(json.certifications, user._id)
+                if (json.interests.length) await addInterests(json.interests, user._id)
 
                 // ---------------------------------------- doned-----------------------------
 
@@ -137,13 +165,16 @@ const fileReader = (fileAddress: string) => {
                 // if (!json.certifications.length) s.resume();
                 // else console.log(json.certifications)
 
-                // if (!json.interests.length) s.resume();
-                // else console.log(json.interests) // string[]
+                // if (2>=json.profiles.length) s.resume();
+                // else {
+                //     console.log(json.profiles)
+                //     console.log(json)
+                // } // string[]
 
-                // if (!json.regions.length) s.resume();
-                // else console.log(json.regions) // string[]
+                // if (!json.education.length) s.resume();
+                // else addEducation(json.education, user._id) // string[]
 
-                // index: location_names, education, profiles
+                // index: profiles
                 // resume the readstream, possibly from a callback
                 // console.log(json)
                 // console.log("done")
@@ -152,7 +183,19 @@ const fileReader = (fileAddress: string) => {
                 console.log('Error while reading file.', err);
                 reject(true)
             })
-                .on('end', function () {
+                .on('end', async function () {
+                    await bulkCertifications()
+                    await bulkCompany()
+                    await bulkCountries()
+                    await bulkEdu()
+                    await bulkEx()
+                    await bulkIntrest()
+                    await bulkLanguages()
+                    await bulkLocation()
+                    await bulkRegions()
+                    await bulkSchool()
+                    await bulkSkills()
+                    await bulkUsers()
                     console.log("finish", new Date())
                     console.log("all lines:", lineNr)
                     console.log('Read entire file.', fileAddress)
