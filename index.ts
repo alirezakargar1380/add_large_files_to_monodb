@@ -4,6 +4,7 @@ import { addExperience } from "./app/services/addExperience.service";
 import { addLanguages } from "./app/services/addLanguage.service";
 import { addSkills } from "./app/services/addSkills.service";
 import { addUser } from "./app/services/addUser.service";
+import { addCertifications } from "./app/services/addcertifications.service";
 
 var fs = require('fs'), es = require('event-stream');
 const fileNames: any = []
@@ -63,12 +64,13 @@ const fileReader = (fileAddress: string) => {
                 const json = JSON.parse(line)
                 if (lineNr % 1000 === 0) console.log("im in line:", lineNr)
 
-                // const user: IUser | any = await addUser(json)
-                // if (!user) return s.resume();
+                const user: IUser | any = await addUser(json)
+                if (!user) return s.resume();
 
                 // if (json.experience.length) await addExperience(json.experience, user._id)
                 // if (json.languages.length) await addLanguages(json.languages, user._id)
                 // if (json.skills.length) await addSkills(json.skills, user._id)
+                if (json.certifications.length) await addCertifications(json.certifications, user._id)
 
                 // ---------------------------------------- doned-----------------------------
 
@@ -85,8 +87,8 @@ const fileReader = (fileAddress: string) => {
                 // else console.log(json.languages) [{name:"", proficiency:""}] 
                 // addLanguages()
 
-                if (!json.certifications.length) s.resume();
-                else console.log(json.certifications)
+                // if (!json.certifications.length) s.resume();
+                // else console.log(json.certifications)
                 // {
                 //     organization: 'american red cross eastern pennsylvania region',
                 //     start_date: '2019-01',
