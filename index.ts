@@ -1,6 +1,7 @@
 import { connectToMongo } from "./app/loaders/loaders";
 import { IUser } from "./app/models/users.model";
 import { addExperience } from "./app/services/addExperience.service";
+import { addInterests } from "./app/services/addInterests.service";
 import { addLanguages } from "./app/services/addLanguage.service";
 import { addSkills } from "./app/services/addSkills.service";
 import { addUser } from "./app/services/addUser.service";
@@ -70,7 +71,8 @@ const fileReader = (fileAddress: string) => {
                 // if (json.experience.length) await addExperience(json.experience, user._id)
                 // if (json.languages.length) await addLanguages(json.languages, user._id)
                 // if (json.skills.length) await addSkills(json.skills, user._id)
-                if (json.certifications.length) await addCertifications(json.certifications, user._id)
+                // if (json.certifications.length) await addCertifications(json.certifications, user._id)
+                if (json.interests.length) await addInterests(json.interests, user._id)
 
                 // ---------------------------------------- doned-----------------------------
 
