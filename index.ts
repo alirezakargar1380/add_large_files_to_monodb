@@ -3,7 +3,7 @@ import { connectToMongo } from "./app/loaders/loaders";
 import skillsModel from "./app/models/skills.model";
 import usersModel, { IUser } from "./app/models/users.model";
 import { addCountries, addMultiCountries, bulkCountries } from "./app/services/addCountries.service";
-import { addEducation, bulkEdu } from "./app/services/addEducation.service";
+import { addEducation, addMultiEducation, bulkEdu } from "./app/services/addEducation.service";
 import { addExperience, addMultiExperience, bulkEx } from "./app/services/addExperience.service";
 import { addInterests, addMultiInterests, bulkIntrest } from "./app/services/addInterests.service";
 import { addLanguages, addMultiLanguages, bulkLanguages } from "./app/services/addLanguage.service";
@@ -18,7 +18,7 @@ import { bulkSchool } from "./app/services/addSchool.service";
 var fs = require('fs'), es = require('event-stream');
 const fileNames: any = []
 // const fileNames: any = ['part-00003 - Copy.json']
-const folderAddress = "./db/Linkedin-June 2021"
+const folderAddress = "./db/a3"
 // const folderAddress = "./db"
 
 const readFileNames = async () => {
@@ -82,12 +82,7 @@ const sendFileNamesToFileReader = async () => {
     // fileReader(folderAddress + "/" + fileNames[i])
     // fileReader(folderAddress + "/" + fileNames[i + 1])
     // fileReader(folderAddress + "/" + fileNames[i + 2])
-    // fileReader(folderAddress + "/" + fileNames[i + 3])
-    // fileReader(folderAddress + "/" + fileNames[i + 4])
-    // fileReader(folderAddress + "/" + fileNames[i + 5])
-    // fileReader(folderAddress + "/" + fileNames[i + 6])
-    // return
-    for (let i = 0; i < (fileNames.length / 4); i++) {
+    for (let i = 0; i < fileNames.length; i++) {
         await fileReader(folderAddress + "/" + fileNames[i])
     }
 }
@@ -132,6 +127,7 @@ const fileReader = (fileAddress: string) => {
                 if (json.certifications.length) await addMultiCertifications(json.certifications, userId)
                 if (json.interests.length) await addMultiInterests(json.interests, userId)
                 if (json.experience.length) await addMultiExperience(json.experience, userId)
+                if (json.education.length) await addMultiEducation(json.education, userId)
 
                 return s.resume();
                 // ------------------------------------ old sulution
