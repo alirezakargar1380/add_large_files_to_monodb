@@ -1,9 +1,11 @@
 import { connectToMongo } from "./app/loaders/loaders";
 import skillsModel from "./app/models/skills.model";
 import usersModel, { IUser } from "./app/models/users.model";
+import { addCountries } from "./app/services/addCountries.service";
 import { addExperience } from "./app/services/addExperience.service";
 import { addInterests } from "./app/services/addInterests.service";
 import { addLanguages } from "./app/services/addLanguage.service";
+import { addRegions } from "./app/services/addRegions.service";
 import { addSkills } from "./app/services/addSkills.service";
 import { addUser } from "./app/services/addUser.service";
 import { addCertifications } from "./app/services/addcertifications.service";
@@ -31,45 +33,45 @@ const readFileNames = async () => {
 
 const sendFileNamesToFileReader = async () => {
     await connectToMongo()
-    console.log(
-        await skillsModel.aggregate([
-            {
-                $lookup: {
-                    from: "users",
-                    localField: "userId",
-                    foreignField: "_id",
-                    as: "user"
-                }
-            },
-            {
-                $lookup: {
-                    from: "languages",
-                    localField: "userId",
-                    foreignField: "userId",
-                    as: "lang"
-                }
-            },
-            {
-                $unwind: {
-                    "path": "$user",
-                    "preserveNullAndEmptyArrays": true
-                }
-            },
-            {
-                $project: {
-                    title: 1,
-                    "user._id": 1,
-                    "lang.title": 1
-                }
-            },
-            {
-                $match: {
-                    title: { $regex: "media" }
-                }
-            }
-        ])
-    )
-    return
+    // console.log(
+    //     await skillsModel.aggregate([
+    //         {
+    //             $lookup: {
+    //                 from: "users",
+    //                 localField: "userId",
+    //                 foreignField: "_id",
+    //                 as: "user"
+    //             }
+    //         },
+    //         {
+    //             $lookup: {
+    //                 from: "languages",
+    //                 localField: "userId",
+    //                 foreignField: "userId",
+    //                 as: "lang"
+    //             }
+    //         },
+    //         {
+    //             $unwind: {
+    //                 "path": "$user",
+    //                 "preserveNullAndEmptyArrays": true
+    //             }
+    //         },
+    //         {
+    //             $project: {
+    //                 title: 1,
+    //                 "user._id": 1,
+    //                 "lang.title": 1
+    //             }
+    //         },
+    //         {
+    //             $match: {
+    //                 title: { $regex: "media" }
+    //             }
+    //         }
+    //     ])
+    // )
+    // return
     await readFileNames()
     for (let i = 0; i < fileNames.length; i++) {
         let fileName = fileNames[i]
@@ -109,11 +111,13 @@ const fileReader = (fileAddress: string) => {
                 const user: IUser | any = await addUser(json)
                 if (!user) return s.resume();
 
-                if (json.experience.length) await addExperience(json.experience, user._id)
-                if (json.languages.length) await addLanguages(json.languages, user._id)
-                if (json.skills.length) await addSkills(json.skills, user._id)
-                if (json.certifications.length) await addCertifications(json.certifications, user._id)
-                if (json.interests.length) await addInterests(json.interests, user._id)
+                // if (json.experience.length) await addExperience(json.experience, user._id)
+                // if (json.languages.length) await addLanguages(json.languages, user._id)
+                // if (json.skills.length) await addSkills(json.skills, user._id)
+                // if (json.countries.length) await addCountries(json.countries, user._id)
+                if (json.regions.length) await addRegions(json.regions, user._id)
+                // if (json.certifications.length) await addCertifications(json.certifications, user._id)
+                // if (json.interests.length) await addInterests(json.interests, user._id)
 
                 // ---------------------------------------- doned-----------------------------
 
@@ -136,10 +140,10 @@ const fileReader = (fileAddress: string) => {
                 // if (!json.interests.length) s.resume();
                 // else console.log(json.interests) // string[]
 
-                // if (!json.interests.length) s.resume();
-                // else console.log(json.interests) // string[]
+                // if (!json.regions.length) s.resume();
+                // else console.log(json.regions) // string[]
 
-                // index: countries, regions, location_names, education, profiles
+                // index: location_names, education, profiles
                 // resume the readstream, possibly from a callback
                 // console.log(json)
                 // console.log("done")
