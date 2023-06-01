@@ -14,15 +14,17 @@ export const addMultiSkills = async (data: any, userId: ObjectId) => {
         })
     }
 
-    if (multiSkills.length >= 25000) {
-        await bulkSkills()
-    }
+    // if (multiSkills.length >= 25000) {
+    //     await bulkSkills()
+    // }
 }
 
 export const bulkSkills = async () => {
     await skillsModel.bulkWrite(multiSkills.map(item => ({
         insertOne: item
-    })))
+    })), {
+        ordered: false
+    })
     multiSkills = []
 }
 

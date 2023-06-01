@@ -15,15 +15,17 @@ export const addMultiLanguages = async (data: any, userId: ObjectId) => {
         })
     }
 
-    if (multiLanguages.length >= 30000) {
-        await bulkLanguages()
-    }
+    // if (multiLanguages.length >= 30000) {
+    //     await bulkLanguages()
+    // }
 }
 
 export const bulkLanguages = async () => {
     await languagesModel.bulkWrite(multiLanguages.map(item => ({
         insertOne: item
-    })))
+    })), {
+        ordered: false
+    })
     multiLanguages = []
 }
 

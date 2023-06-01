@@ -5,7 +5,7 @@ let multiUser: any[] = []
 
 export const addMultiUser = async (data: any) => {
     const id: ObjectId = new ObjectId()
-    
+
     multiUser.push({
         document: {
             _id: id,
@@ -35,10 +35,9 @@ export const addMultiUser = async (data: any) => {
         }
     })
 
-    if (multiUser.length === 50000) {
-        await bulkUsers()
-    }
-        
+    // if (multiUser.length === 50000) {
+    //     await bulkUsers()
+    // }
 
     return id
 }
@@ -46,7 +45,9 @@ export const addMultiUser = async (data: any) => {
 export const bulkUsers = async () => {
     await usersModel.bulkWrite(multiUser.map(item => ({
         insertOne: item
-    })))
+    })), {
+        ordered: false
+    })
     multiUser = []
 }
 

@@ -19,9 +19,9 @@ export const addMultiCompany = async (data: any, userId: ObjectId) => {
         }
     })
 
-    if (multiCompanyData.length >= 30000) {
-        await bulkCompany()
-    }
+    // if (multiCompanyData.length >= 30000) {
+    //     await bulkCompany()
+    // }
 
     return id
 }
@@ -29,7 +29,9 @@ export const addMultiCompany = async (data: any, userId: ObjectId) => {
 export const bulkCompany = async () => {
     await companyModel.bulkWrite(multiCompanyData.map(item => ({
         insertOne: item
-    })))
+    })), {
+        ordered: false
+    })
     multiCompanyData = []
 }
 

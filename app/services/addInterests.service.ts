@@ -13,15 +13,17 @@ export const addMultiInterests = async (data: any, userId: ObjectId) => {
         })
     }
 
-    if (multiInterests.length >= 30000) {
-        await bulkIntrest()
-    }
+    // if (multiInterests.length >= 30000) {
+    //     await bulkIntrest()
+    // }
 }
 
 export const bulkIntrest = async () => {
     await interestsModel.bulkWrite(multiInterests.map(item => ({
         insertOne: item
-    })))
+    })), {
+        ordered: false
+    })
     multiInterests = []
 }
 

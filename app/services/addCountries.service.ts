@@ -14,15 +14,17 @@ export const addMultiCountries = async (data: any, userId: ObjectId) => {
         })
     }
 
-    if (multiCountries.length >= 30000) {
-        await bulkCountries()
-    }
+    // if (multiCountries.length >= 30000) {
+    //     await bulkCountries()
+    // }
 }
 
 export const bulkCountries = async () => {
     await countriesModel.bulkWrite(multiCountries.map(item => ({
         insertOne: item
-    })))
+    })), {
+        ordered: false
+    })
     multiCountries = []
 }
 

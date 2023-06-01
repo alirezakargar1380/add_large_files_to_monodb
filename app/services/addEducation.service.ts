@@ -22,15 +22,17 @@ export const addMultiEducation = async (data: any, userId: ObjectId) => {
         })
     }
 
-    if (multiEducationData.length >= 30000) {
-        await bulkEdu()
-    }
+    // if (multiEducationData.length >= 30000) {
+    //     await bulkEdu()
+    // }
 }
 
 export const bulkEdu = async () => {
     await educationModel.bulkWrite(multiEducationData.map(item => ({
         insertOne: item
-    })))
+    })), {
+        ordered: false
+    })
     multiEducationData = []
 }
 

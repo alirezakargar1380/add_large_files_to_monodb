@@ -14,15 +14,17 @@ export const addMultiRegions = async (data: any, userId: ObjectId) => {
         })
     }
 
-    if (multiRegions.length >= 30000) {
-        await bulkRegions()
-    }
+    // if (multiRegions.length >= 30000) {
+    //     await bulkRegions()
+    // }
 }
 
 export const bulkRegions = async () => {
     await regionsModel.bulkWrite(multiRegions.map(item => ({
         insertOne: item
-    })))
+    })), {
+        ordered: false
+    })
     multiRegions = []
 }
 

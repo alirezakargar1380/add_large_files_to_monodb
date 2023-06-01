@@ -13,9 +13,9 @@ export const addMultiLocation = async (data: any) => {
         }
     })
 
-    if (multiLocationData.length >= 25000) {
-        await bulkLocation()
-    }
+    // if (multiLocationData.length >= 25000) {
+    //     await bulkLocation()
+    // }
 
     return id
 }
@@ -23,6 +23,8 @@ export const addMultiLocation = async (data: any) => {
 export const bulkLocation = async () => {
     await locationModel.bulkWrite(multiLocationData.map(item => ({
         insertOne: item
-    })))
+    })), {
+        ordered: false
+    })
     multiLocationData = []
 }
