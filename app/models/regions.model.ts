@@ -7,8 +7,8 @@ export interface IRegions {
 }
 
 const regionsSchema = new Schema<IRegions>({
-    userId: { type: Schema.Types.ObjectId, required: true, ref: "users", index: true },
-    region: { type: String, required: true, index: true }
+    userId: { type: Schema.Types.ObjectId, required: true, ref: "users" },
+    region: { type: String, required: true }
 }, { timestamps: true })
 
 

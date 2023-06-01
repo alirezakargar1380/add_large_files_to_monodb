@@ -7,9 +7,8 @@ export interface ICountries {
 }
 
 const countriesSchema = new Schema<ICountries>({
-    userId: { type: Schema.Types.ObjectId, required: true, ref: "users", index: true },
-    country: { type: String, required: true, index: true }
+    userId: { type: Schema.Types.ObjectId, required: true, ref: "users", index: false },
+    country: { type: String, required: true, index: false }
 }, { timestamps: true })
-
 
 export default mongoose.model('countries', countriesSchema)
