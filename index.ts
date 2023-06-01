@@ -14,11 +14,17 @@ import { addCertifications, addMultiCertifications, bulkCertifications } from ".
 import { bulkCompany } from "./app/services/addCompany.service";
 import { bulkLocation } from "./app/services/addLocation.service";
 import { bulkSchool } from "./app/services/addSchool.service";
+import certificationsModel from "./app/models/certifications.model";
+import interestsModel from "./app/models/interests.model";
+import companysModel from "./app/models/companys.model";
+import experienceModel from "./app/models/experience.model";
+import educationModel from "./app/models/education.model";
+import regionsModel, { IRegions } from "./app/models/regions.model";
 
 var fs = require('fs'), es = require('event-stream');
 const fileNames: any = []
 // const fileNames: any = ['part-00003 - Copy.json']
-const folderAddress = "./db/a3"
+const folderAddress = "./db/a1"
 // const folderAddress = "./db"
 
 const readFileNames = async () => {
@@ -38,22 +44,79 @@ const readFileNames = async () => {
 
 const sendFileNamesToFileReader = async () => {
     await connectToMongo()
+    console.log(new Date())
     // console.log(
     //     await skillsModel.aggregate([
+    //         {
+    //             $match: {
+    //                 title: { $regex: "sales" },
+                    // "lang.title": { $regex: "english" }
+            //     }
+            // },
+            // {
+            //     $limit: 2
+            // },
+            // {
+            //     $lookup: {
+            //         from: "users",
+            //         localField: "userId",
+            //         foreignField: "_id",
+            //         as: "user"
+            //     }
+            // },
+            // {
+            //     $lookup: {
+            //         from: "languages",
+            //         localField: "userId",
+            //         foreignField: "userId",
+            //         as: "lang"
+            //     }
+            // },
+            // {
+            //     $unwind: {
+            //         "path": "$user",
+            //         "preserveNullAndEmptyArrays": true
+            //     }
+            // },
+            // {
+            //     $unwind: {
+            //         "path": "$lang",
+            //         "preserveNullAndEmptyArrays": true
+            //     }
+            // },
+            // {
+            //     $project: {
+            //         title: 1,
+            //         userId: 1,
+            //         "user.name": 1,
+                    // "lang.title": 1,
+                    // "lang.userId": 1
+            //     }
+            // },
+            // {
+            //     $match: {
+            //         "lang.title": { $regex: "greek" }
+            //     }
+            // },
+    //     ])
+    // )
+    
+    // console.log(
+    //     await regionsModel.aggregate([
+            // {
+            //     $match: {
+            //         name: { $regex: "jeune" }
+            //     }
+            // },
+    //         {
+    //             $limit: 5
+    //         },
     //         {
     //             $lookup: {
     //                 from: "users",
     //                 localField: "userId",
     //                 foreignField: "_id",
     //                 as: "user"
-    //             }
-    //         },
-    //         {
-    //             $lookup: {
-    //                 from: "languages",
-    //                 localField: "userId",
-    //                 foreignField: "userId",
-    //                 as: "lang"
     //             }
     //         },
     //         {
@@ -64,24 +127,20 @@ const sendFileNamesToFileReader = async () => {
     //         },
     //         {
     //             $project: {
+    //                 name: 1,
     //                 title: 1,
-    //                 "user._id": 1,
-    //                 "lang.title": 1
-    //             }
-    //         },
-    //         {
-    //             $match: {
-    //                 title: { $regex: "media" }
+    //                 degrees: 1,
+    //                 region: 1,
+    //                 "user.name": 1
     //             }
     //         }
     //     ])
     // )
     // return
+    // console.log(await usersModel.find().limit(1))
+    // console.log(new Date())
+    // return
     await readFileNames()
-    // let i = 0
-    // fileReader(folderAddress + "/" + fileNames[i])
-    // fileReader(folderAddress + "/" + fileNames[i + 1])
-    // fileReader(folderAddress + "/" + fileNames[i + 2])
     for (let i = 0; i < fileNames.length; i++) {
         await fileReader(folderAddress + "/" + fileNames[i])
     }
@@ -109,7 +168,7 @@ const fileReader = (fileAddress: string) => {
 
                 // pause the readstream
                 s.pause();
-
+                
                 if (!isJson(line)) return s.resume();
                 lineNr++;
 
@@ -117,6 +176,8 @@ const fileReader = (fileAddress: string) => {
                 if (lineNr % 20000 === 0) {
                     console.log("im in line:", lineNr, new Date(), fileAddress)
                 }
+
+                // return s.resume();
 
                 const userId: ObjectId = await addMultiUser(json)
 

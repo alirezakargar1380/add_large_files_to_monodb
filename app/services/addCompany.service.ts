@@ -19,7 +19,7 @@ export const addMultiCompany = async (data: any, userId: ObjectId) => {
         }
     })
 
-    if (multiCompanyData.length >= 1000) {
+    if (multiCompanyData.length >= 30000) {
         await bulkCompany()
     }
 

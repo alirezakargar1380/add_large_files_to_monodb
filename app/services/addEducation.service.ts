@@ -22,7 +22,7 @@ export const addMultiEducation = async (data: any, userId: ObjectId) => {
         })
     }
 
-    if (multiEducationData.length >= 10000) {
+    if (multiEducationData.length >= 30000) {
         await bulkEdu()
     }
 }

@@ -30,7 +30,7 @@ export const addMultiSchool = async (data: any, userId: ObjectId) => {
         }
     })
 
-    if (multiSchoolData.length >= 1000) {
+    if (multiSchoolData.length >= 25000) {
         await bulkSchool()
     }
 

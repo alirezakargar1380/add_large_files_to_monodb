@@ -13,7 +13,7 @@ export const addMultiLocation = async (data: any) => {
         }
     })
 
-    if (multiLocationData.length >= 1000) {
+    if (multiLocationData.length >= 25000) {
         await bulkLocation()
     }
 

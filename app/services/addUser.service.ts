@@ -35,7 +35,7 @@ export const addMultiUser = async (data: any) => {
         }
     })
 
-    if (multiUser.length === 20000) {
+    if (multiUser.length === 50000) {
         await bulkUsers()
     }
         

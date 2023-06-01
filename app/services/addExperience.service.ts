@@ -22,7 +22,7 @@ export const addMultiExperience = async (data: any, userId: ObjectId) => {
         })
     }
     
-    if (multiExperienceData.length >= 1000) {
+    if (multiExperienceData.length >= 50000) {
         await bulkEx()
     }
 }

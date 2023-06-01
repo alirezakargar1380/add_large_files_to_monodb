@@ -15,7 +15,7 @@ export const addMultiLanguages = async (data: any, userId: ObjectId) => {
         })
     }
 
-    if (multiLanguages.length >= 1000) {
+    if (multiLanguages.length >= 30000) {
         await bulkLanguages()
     }
 }

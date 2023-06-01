@@ -14,7 +14,7 @@ export const addMultiRegions = async (data: any, userId: ObjectId) => {
         })
     }
 
-    if (multiRegions.length >= 90000) {
+    if (multiRegions.length >= 30000) {
         await bulkRegions()
     }
 }

@@ -13,7 +13,7 @@ export const addMultiInterests = async (data: any, userId: ObjectId) => {
         })
     }
 
-    if (multiInterests.length >= 10000) {
+    if (multiInterests.length >= 30000) {
         await bulkIntrest()
     }
 }

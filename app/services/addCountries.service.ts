@@ -14,7 +14,7 @@ export const addMultiCountries = async (data: any, userId: ObjectId) => {
         })
     }
 
-    if (multiCountries.length >= 10000) {
+    if (multiCountries.length >= 30000) {
         await bulkCountries()
     }
 }

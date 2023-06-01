@@ -11,7 +11,7 @@ export const addMultiCertifications = async (data: any, userId: ObjectId) => {
         })
     }
 
-    if (multiCertifications.length >= 1000) {
+    if (multiCertifications.length >= 25000) {
         await bulkCertifications()
     }
 }

@@ -14,7 +14,7 @@ export const addMultiSkills = async (data: any, userId: ObjectId) => {
         })
     }
 
-    if (multiSkills.length >= 10000) {
+    if (multiSkills.length >= 25000) {
         await bulkSkills()
     }
 }
