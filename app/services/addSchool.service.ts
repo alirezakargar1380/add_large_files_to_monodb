@@ -38,6 +38,7 @@ export const addMultiSchool = async (data: any, userId: ObjectId) => {
 }
 
 export const bulkSchool = async () => {
+    if (!multiSchoolData.length) return
     await schoolsModel.bulkWrite(multiSchoolData.map(item => ({
         insertOne: item
     })), {

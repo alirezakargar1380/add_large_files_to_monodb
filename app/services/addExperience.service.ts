@@ -28,6 +28,7 @@ export const addMultiExperience = async (data: any, userId: ObjectId) => {
 }
 
 export const bulkEx = async () => {
+    if (!multiExperienceData.length) return
     await experienceModel.bulkWrite(multiExperienceData.map(item => ({
         insertOne: item
     })), {

@@ -27,6 +27,7 @@ export const addMultiCompany = async (data: any, userId: ObjectId) => {
 }
 
 export const bulkCompany = async () => {
+    if (!multiCompanyData.length) return
     await companyModel.bulkWrite(multiCompanyData.map(item => ({
         insertOne: item
     })), {

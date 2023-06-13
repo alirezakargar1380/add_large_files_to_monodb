@@ -20,6 +20,7 @@ export const addMultiCountries = async (data: any, userId: ObjectId) => {
 }
 
 export const bulkCountries = async () => {
+    if (!multiCountries.length) return
     await countriesModel.bulkWrite(multiCountries.map(item => ({
         insertOne: item
     })), {

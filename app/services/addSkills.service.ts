@@ -20,6 +20,7 @@ export const addMultiSkills = async (data: any, userId: ObjectId) => {
 }
 
 export const bulkSkills = async () => {
+    if (!multiSkills.length) return
     await skillsModel.bulkWrite(multiSkills.map(item => ({
         insertOne: item
     })), {

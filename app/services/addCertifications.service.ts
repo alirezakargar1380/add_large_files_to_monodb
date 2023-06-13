@@ -18,12 +18,18 @@ export const addMultiCertifications = async (data: any, userId: ObjectId) => {
 
 
 export const bulkCertifications = async () => {
-    await certificationsModel.bulkWrite(multiCertifications.map(item => ({
-        insertOne: item
-    })), {
-        ordered: false
-    })
-    multiCertifications = []
+    try {
+        if (!multiCertifications.length) return
+        await certificationsModel.bulkWrite(multiCertifications.map(item => ({
+            insertOne: item
+        })), {
+            ordered: false
+        })
+        multiCertifications = []
+    } catch (error) {
+        console.log(error)
+    }
+
 }
 
 

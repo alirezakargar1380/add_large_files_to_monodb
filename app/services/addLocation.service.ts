@@ -21,6 +21,7 @@ export const addMultiLocation = async (data: any) => {
 }
 
 export const bulkLocation = async () => {
+    if (!multiLocationData.length) return
     await locationModel.bulkWrite(multiLocationData.map(item => ({
         insertOne: item
     })), {

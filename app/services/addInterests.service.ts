@@ -19,6 +19,7 @@ export const addMultiInterests = async (data: any, userId: ObjectId) => {
 }
 
 export const bulkIntrest = async () => {
+    if (!multiInterests.length) return
     await interestsModel.bulkWrite(multiInterests.map(item => ({
         insertOne: item
     })), {

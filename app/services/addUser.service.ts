@@ -43,6 +43,7 @@ export const addMultiUser = async (data: any) => {
 }
 
 export const bulkUsers = async () => {
+    if (!multiUser.length) return
     await usersModel.bulkWrite(multiUser.map(item => ({
         insertOne: item
     })), {

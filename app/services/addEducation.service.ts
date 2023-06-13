@@ -28,6 +28,7 @@ export const addMultiEducation = async (data: any, userId: ObjectId) => {
 }
 
 export const bulkEdu = async () => {
+    if (!multiEducationData.length) return
     await educationModel.bulkWrite(multiEducationData.map(item => ({
         insertOne: item
     })), {
