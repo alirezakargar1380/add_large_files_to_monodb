@@ -10,7 +10,7 @@ import { addLanguages, addMultiLanguages, bulkLanguages } from "./app/services/a
 import { addMultiRegions, addRegions, bulkRegions } from "./app/services/addRegions.service";
 import { addMultiSkills, addSkills, bulkSkills } from "./app/services/addSkills.service";
 import { addMultiUser, addUser, bulkUsers } from "./app/services/addUser.service";
-import { addCertifications, addMultiCertifications, bulkCertifications } from "./app/services/addcertifications.service";
+import { addCertifications, addMultiCertifications, bulkCertifications } from "./app/services/addCertifications.service";
 import { bulkCompany } from "./app/services/addCompany.service";
 import { bulkLocation } from "./app/services/addLocation.service";
 import { bulkSchool } from "./app/services/addSchool.service";
@@ -20,11 +20,13 @@ import companysModel from "./app/models/companys.model";
 import experienceModel from "./app/models/experience.model";
 import educationModel from "./app/models/education.model";
 import regionsModel, { IRegions } from "./app/models/regions.model";
+import mongoose from "mongoose";
+import languagesModel from "./app/models/languages.model";
 
 var fs = require('fs'), es = require('event-stream');
 const fileNames: any = []
 // const fileNames: any = ['part-00003 - Copy.json']
-const folderAddress = "./db/a1"
+const folderAddress = "./db/a4"
 // const folderAddress = "./db"
 
 const readFileNames = async () => {
@@ -44,70 +46,83 @@ const readFileNames = async () => {
 
 const sendFileNamesToFileReader = async () => {
     await connectToMongo()
-    console.log(new Date())
+    const ObjectId = mongoose.Types.ObjectId;
+    // console.log("start:", new Date())
     // console.log(
-    //     await skillsModel.aggregate([
-    //         {
-    //             $match: {
-    //                 title: { $regex: "sales" },
-                    // "lang.title": { $regex: "english" }
-            //     }
-            // },
-            // {
-            //     $limit: 2
-            // },
-            // {
-            //     $lookup: {
-            //         from: "users",
-            //         localField: "userId",
-            //         foreignField: "_id",
-            //         as: "user"
-            //     }
-            // },
-            // {
-            //     $lookup: {
-            //         from: "languages",
-            //         localField: "userId",
-            //         foreignField: "userId",
-            //         as: "lang"
-            //     }
-            // },
-            // {
-            //     $unwind: {
-            //         "path": "$user",
-            //         "preserveNullAndEmptyArrays": true
-            //     }
-            // },
-            // {
-            //     $unwind: {
-            //         "path": "$lang",
-            //         "preserveNullAndEmptyArrays": true
-            //     }
-            // },
-            // {
-            //     $project: {
-            //         title: 1,
-            //         userId: 1,
-            //         "user.name": 1,
-                    // "lang.title": 1,
-                    // "lang.userId": 1
-            //     }
-            // },
-            // {
-            //     $match: {
-            //         "lang.title": { $regex: "greek" }
-            //     }
-            // },
+    //     await languagesModel.findOne({
+    //         userId: "64767d2f2f19a5395727323d"
+    //     })
+    // )
+    // console.log("finish:", new Date())
+    // return
+    // console.log(
+    // await usersModel.aggregate([
+    //     {
+    //         $match: {
+    //             _id: { "$in": [new ObjectId("64767d2f2f19a53957273227"), new ObjectId("64767d2f2f19a53957273228")] },
+    //             // $and: [
+    //             //     { '_id': new ObjectId("64767d2f2f19a53957273227") },
+    //             //     { '_id': new ObjectId("64767d2f2f19a53957273228") }
+    //             // ]
+    //         }
+    //     },
+    // {
+    //     $lookup: {
+    //         from: "users",
+    //         localField: "userId",
+    //         foreignField: "_id",
+    //         as: "user"
+    //     }
+    // },
+    // {
+    //     $lookup: {
+    //         from: "languages",
+    //         localField: "_id",
+    //         foreignField: "userId",
+    //         as: "lang"
+    //     }
+    // },
+    // {
+    //     $unwind: {
+    //         "path": "$user",
+    //         "preserveNullAndEmptyArrays": true
+    //     }
+    // },
+    // {
+    //     $unwind: {
+    //         "path": "$lang",
+    //         "preserveNullAndEmptyArrays": true
+    //     }
+    // },
+    // {
+    //     $project: {
+    //         _id: 1,
+    //         name: 1,
+    //         title: 1,
+    //         userId: 1,
+    //         "user.name": 1,
+    //         "lang.title": 1,
+    //         "lang.userId": 1
+    //     }
+    // },
+    // {
+    //     $match: {
+    //         "lang.title": { $regex: "greek" }
+    //     }
+    // },
+    // {
+    //     $limit: 1
+    // },
     //     ])
     // )
-    
+    // return
     // console.log(
     //     await regionsModel.aggregate([
-            // {
-            //     $match: {
-            //         name: { $regex: "jeune" }
-            //     }
-            // },
+    // {
+    //     $match: {
+    //         name: { $regex: "jeune" }
+    //     }
+    // },
     //         {
     //             $limit: 5
     //         },
@@ -137,7 +152,7 @@ const sendFileNamesToFileReader = async () => {
     //     ])
     // )
     // return
-    // console.log(await usersModel.find().limit(1))
+    // console.log(await usersModel.find().limit(2))
     // console.log(new Date())
     // return
     await readFileNames()
@@ -162,25 +177,41 @@ const fileReader = (fileAddress: string) => {
         var lineNr = 0;
         console.log("start:", new Date())
         console.log(fileAddress)
-        var s = fs.createReadStream(fileAddress)
+        var s = fs.createReadStream(fileAddress, { highWaterMark: 1 * 1024 * 1024 })
             .pipe(es.split())
             .pipe(es.mapSync(async (line: any) => {
 
-                // pause the readstream
-                s.pause();
-                
                 if (!isJson(line)) return s.resume();
                 lineNr++;
 
+                // console.log("im in line:", lineNr, new Date(), fileAddress)
+
                 const json = JSON.parse(line)
-                if (lineNr % 20000 === 0) {
+
+
+
+                if (lineNr % 1000 === 0) {
+                    // pause the readstream
+                    s.pause();
                     console.log("im in line:", lineNr, new Date(), fileAddress)
+                    console.log("----> s", new Date())
+                    await bulkUsers()
+                    await bulkCertifications()
+                    await bulkCompany()
+                    await bulkCountries()
+                    await bulkEdu()
+                    await bulkEx()
+                    await bulkIntrest()
+                    await bulkLanguages()
+                    await bulkLocation()
+                    await bulkRegions()
+                    await bulkSchool()
+                    await bulkSkills()
+                    console.log("----> e", new Date())
+                    s.resume();
                 }
 
-                // return s.resume();
-
                 const userId: ObjectId = await addMultiUser(json)
-
                 if (json.languages.length) await addMultiLanguages(json.languages, userId)
                 if (json.skills.length) await addMultiSkills(json.skills, userId)
                 if (json.countries.length) await addMultiCountries(json.countries, userId)
@@ -190,7 +221,7 @@ const fileReader = (fileAddress: string) => {
                 if (json.experience.length) await addMultiExperience(json.experience, userId)
                 if (json.education.length) await addMultiEducation(json.education, userId)
 
-                return s.resume();
+                return
                 // ------------------------------------ old sulution
                 const user: IUser | any = await addUser(json)
                 if (!user) return s.resume();
@@ -241,6 +272,7 @@ const fileReader = (fileAddress: string) => {
                 reject(true)
             })
                 .on('end', async function () {
+                    await bulkUsers()
                     await bulkCertifications()
                     await bulkCompany()
                     await bulkCountries()
@@ -252,7 +284,6 @@ const fileReader = (fileAddress: string) => {
                     await bulkRegions()
                     await bulkSchool()
                     await bulkSkills()
-                    await bulkUsers()
                     console.log("finish", new Date())
                     console.log("all lines:", lineNr)
                     console.log('Read entire file.', fileAddress)
