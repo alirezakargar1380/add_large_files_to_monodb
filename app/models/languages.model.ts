@@ -1,7 +1,7 @@
 import mongoose, { Schema } from 'mongoose'
 
 const languagesSchema = new Schema({
-    userId: { type: Schema.Types.ObjectId, required: true, ref: "users" },
+    userId: { type: Schema.Types.ObjectId, required: true, ref: "users", index: false },
     title: { type: String, required: false },
     des: { type: String, required: false },
     proficiency: { type: Number, required: false, default: null }
