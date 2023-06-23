@@ -3,12 +3,11 @@ import skillsModel from "../models/skills.model";
 
 let multiSkills: any[] = []
 
-export const addMultiSkills = async (data: any, userId: ObjectId) => {
+export const addMultiSkills = async (data: any) => {
     for (let i = 0; i < data.length; i++) {
         const element = data[i];
         multiSkills.push({
             document: {
-                userId: userId,
                 title: element
             }
         })
@@ -20,13 +19,17 @@ export const addMultiSkills = async (data: any, userId: ObjectId) => {
 }
 
 export const bulkSkills = async () => {
-    if (!multiSkills.length) return
-    await skillsModel.bulkWrite(multiSkills.map(item => ({
-        insertOne: item
-    })), {
-        ordered: false
-    })
-    multiSkills = []
+    try {
+        if (!multiSkills.length) return
+        await skillsModel.bulkWrite(multiSkills.map(item => ({
+            insertOne: item
+        })), {
+            ordered: false
+        })
+        multiSkills = []
+    } catch (e) {
+        // console.log(e)
+    }
 }
 
 export const addSkills = (data: any, userId: ObjectId) => {

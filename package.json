@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "event-stream": "^4.0.1",
+    "JSONStream": "^1.3.5",
     "mongodb": "^5.5.0",
     "mongoose": "^7.2.1"
   }
